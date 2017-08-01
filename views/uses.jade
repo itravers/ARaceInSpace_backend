@@ -1,0 +1,36 @@
+link(href='/stylesheets/style.css', rel='stylesheet')
+link(href='/stylesheets/bootstrap.css', rel='stylesheet')
+script(src='/javascripts/jquery-3.1.0.min.js')
+script(src='/javascripts/bootstrap.min.js')
+script var info = !{JSON.stringify(uses)}
+block content
+    h1.
+        Box Uses
+    div#map_canvas
+    div.table-responsive
+        table.table.table-sm.table-bordered.table-inverse.table-hover
+            thead.thead-inverse
+                tr
+                    th #
+                    th ip
+                    th ZipCode
+                    th Time
+                    th Forecast String
+                    th Low
+                    th High
+                    th Precip %
+                    th Box Version
+                    th Serial Number
+            tbody
+                each use, i in uses
+                    tr
+                        th(scope='row') #{i}
+                        td #{use.ip}
+                        td #{use.zipcode}
+                        td #{moment(1000 * use.time).format('YYYY/MM/DD h:mm:ss a')}
+                        td #{use.forecast}
+                        td #{forecasts[i][0]}
+                        td #{forecasts[i][1]}
+                        td #{forecasts[i][2]}
+                        td #{use.boxversion}
+                        td #{use.serialNum}
