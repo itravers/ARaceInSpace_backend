@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+/* GET leaderboard website page. */
 router.get('/', function(req, res, next) {
-
 	var db = req.db;
 	var collection = db.get('leaderboards');
 	collection.find({}, {}, function (e, docs){
@@ -14,27 +13,55 @@ router.get('/', function(req, res, next) {
 	});
 });
 
-router.get('/uses', function(req, res){
-  var db = req.db;
-  var collection = db.get('weatherqueries');
-  collection.find({}, {}, function(e, docs){
-//    console.log("DOCS FOLLOW");
-//    console.log(docs);
-    var forecasts = new Array();
-    for(var i = 0; i < docs.length; i++){
-      var fString = docs[i].forecast;
-      fString = fString.substring(1, fString.length);
-      var fArray = fString.split("$");
-      forecasts.push(fArray);
-    }
-//    console.log("FORECASTS ARRAY FOLLOWS");
-//    console.log(forecasts);
-    res.render('uses', {
-      moment: require('moment'),
-      "uses" : docs,
-      "forecasts" : forecasts
-    });
-  });
+router.get('/json', function(req, res, next){
+	var db = req.db;
+	var collection = db.get('leaderboards');
+	collection.find({}, {}, function(e, docs){
+		res.send(docs);
+	});
 });
+
+router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
+	var db = req.db;
+	var collection = db.get('leaderboards');
+	/*collection.find(
+		{},
+		{},
+		function(e, docs){
+			res.send(docs);
+		}
+	);*/
+/*	collection.update( 
+		{ data: { $elemMatch: { place: "1st" } } },
+		{ $set: { 'data.$.name': req.params.name } },
+		function(e, docs){
+			res.send(docs);	
+		}
+	 );
+*/
+
+        var place = req.params.place-1;
+        var q = "levels.$.data."+place+".name";
+	var obj = {};
+	obj[q] = req.params.name;
+	collection.update(
+                { levels: { $elemMatch: {name : req.params.level}} },
+                //{ $set: { "levels.$.data.place.name": req.params.name } },
+		{ $set: obj},
+                function(e, docs){
+			if(e == null){
+                        	res.send(docs);
+			}else{
+                        	res.send(e);
+			}
+                }
+         );
+
+
+	
+});
+
+
+
 
 module.exports = router;

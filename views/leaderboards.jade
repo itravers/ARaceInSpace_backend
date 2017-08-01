@@ -1,5 +1,30 @@
-extends layout
-
+link(href='/stylesheets/style.css', rel='stylesheet')
+link(href='/stylesheets/bootstrap.css', rel='stylesheet')
+script(src='/javascripts/jquery-3.1.0.min.js')
+script(src='/javascripts/bootstrap.min.js')
+script var docs = !{JSON.stringify(docs)}
 block content
-  h1= title
-  p Welcome to #{title}
+    h1.
+        Box Uses
+    div#map_canvas
+    div.table-responsive
+        table.table.table-sm.table-bordered.table-inverse.table-hover
+            thead.thead-inverse
+                tr
+                    th Level
+                    th Place
+                    th Name
+                    th Time
+                    th ID
+            tbody
+                each level, i in docs[0].levels
+                    tr
+                        td #{level.name}
+                        each place, j in level.data
+                          tr
+                          td
+                          td #{place.place}
+                          td #{place.name}
+                          td #{place.time}
+                          td #{place.id}
+                
