@@ -26,12 +26,12 @@ router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
 	var collection = db.get('leaderboards');
         var place = req.params.place-1;
 	var newTime = parseInt(req.params.time);
-	var level = req.params.level-1;//since leves are 0 indexed in db
+	var level = parseInt(req.params.level);//since leves are 0 indexed in db
+	level = level -1;
         var nameq = "levels."+level+".data."+place+".name";
 	var idq =   "levels."+level+".data."+place+".id";
 	var timeq = "levels."+level+".data."+place+".time";
 	//var timeq = "levels.$.data."+place+".time";
-	var levelName = "Level "+req.params.level;
 	var obj = {};
 	obj[nameq] = req.params.name;
 	obj[timeq] = req.params.time;
