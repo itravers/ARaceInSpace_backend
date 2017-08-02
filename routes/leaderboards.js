@@ -21,6 +21,28 @@ router.get('/json', function(req, res, next){
 	});
 });
 
+router.post('/submitGhost', function(req, res, next){
+	var db = req.db;
+	var collection = db.get('ghosts');
+	var jsonRecord = '{"ghost":'+JSON.stringify(req.body)+'}';//make entire request a json file
+	console.log(jsonRecord);
+	//console.log(jsonRecord);
+	var string = '{"ghost":[{"class":"com.araceinspace.InputSubSystem.Action","frameNum":9,"input":"BOOST_PRESSED"},{"class":"com.araceinspace.InputSubSystem.Action","frameNum":3575,"input":"PLAYTIME"}]}';
+	var jsonString = JSON.parse(jsonRecord);
+	//var parsedJson = JSON.parse(jsonRecord); //parse request json into storable string
+        //console.log(jsonRecord);
+	collection.insert(
+		jsonString,
+		function(e, docs){
+			if(e == null){
+				res.send("success");
+			}else{
+				console.log(e);
+			}
+		}
+	);
+});
+
 router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
 	var db = req.db;
 	var collection = db.get('leaderboards');
@@ -96,6 +118,31 @@ router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
 });
 
 
+function rand_string(n) {
+    if (n <= 0) {
+        return '';
+    }
+    var rs = '';
+    try {
+	var crypto = require('crypto');
+        rs = crypto.randomBytes(Math.ceil(n/2)).toString('hex').slice(0,n);
+        /* note: could do this non-blocking, but still might fail */
+    }
+    catch(ex) {
+        /* known exception cause: depletion of entropy info for randomBytes */
+        console.error('Exception generating random string: ' + ex);
+        /* weaker random fallback */
+        rs = '';
+        var r = n % 8, q = (n-r)/8, i;
+        for(i = 0; i < q; i++) {
+            rs += Math.random().toString(16).slice(2);
+        }
+        if(r > 0){
+            rs += Math.random().toString(16).slice(2,i);
+        }
+    }
+    return rs;
+}
 
 
 module.exports = router;
