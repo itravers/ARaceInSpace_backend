@@ -21,13 +21,13 @@ router.get('/json', function(req, res, next){
 	});
 });
 
-router.post('/submitGhost', function(req, res, next){
+router.post('/submitGhost/:id', function(req, res, next){
 	var db = req.db;
+	var id = req.params.id;
 	var collection = db.get('ghosts');
-	var jsonRecord = '{"ghost":'+JSON.stringify(req.body)+'}';//make entire request a json file
+	var jsonRecord = '{"ghostid":"'+id+'","ghost":'+JSON.stringify(req.body)+'}';//make entire request a json file
 	console.log(jsonRecord);
 	//console.log(jsonRecord);
-	var string = '{"ghost":[{"class":"com.araceinspace.InputSubSystem.Action","frameNum":9,"input":"BOOST_PRESSED"},{"class":"com.araceinspace.InputSubSystem.Action","frameNum":3575,"input":"PLAYTIME"}]}';
 	var jsonString = JSON.parse(jsonRecord);
 	//var parsedJson = JSON.parse(jsonRecord); //parse request json into storable string
         //console.log(jsonRecord);
@@ -43,7 +43,7 @@ router.post('/submitGhost', function(req, res, next){
 	);
 });
 
-router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
+router.get('/update/:level/:place/:name/:time', function(req, res, next){
 	var db = req.db;
 	var collection = db.get('leaderboards');
         var place = req.params.place-1;
@@ -51,13 +51,14 @@ router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
 	var level = parseInt(req.params.level);//since leves are 0 indexed in db
 	level = level -1;
         var nameq = "levels."+level+".data."+place+".name";
-	var idq =   "levels."+level+".data."+place+".id";
 	var timeq = "levels."+level+".data."+place+".time";
+	var idq = "levels."+level+".data."+place+".id";
+	var id = rand_string(5);
 	//var timeq = "levels.$.data."+place+".time";
 	var obj = {};
 	obj[nameq] = req.params.name;
 	obj[timeq] = req.params.time;
-	obj[idq] = req.params.id;
+	obj[idq] = id;
 
 
 
@@ -82,7 +83,7 @@ router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
               					  { $set: obj},
               					  function(e, docs){
                 				        if(e == null){
-                        				        res.send("success");
+                        				        res.send("success:"+id);
                        					 }else{
                         				        res.send(e);
                        					 }
