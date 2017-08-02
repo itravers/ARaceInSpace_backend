@@ -60,7 +60,7 @@ router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
               					  { $set: obj},
               					  function(e, docs){
                 				        if(e == null){
-                        				        res.send(docs);
+                        				        res.send("success");
                        					 }else{
                         				        res.send(e);
                        					 }
@@ -69,7 +69,7 @@ router.get('/update/:level/:place/:name/:time/:id', function(req, res, next){
 
 
 				}else{
-					res.send("your time of " +newTime+" did not beat "+ previousTime);
+					res.send("Not Fast Enough");
 				}
 			}else{
 				res.send(e);
