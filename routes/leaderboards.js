@@ -13,6 +13,21 @@ router.get('/', function(req, res, next) {
 	});
 });
 
+router.get('/ghosts', function(req, res, next){
+	var db = req.db;
+	var collection = db.get('ghosts');
+	collection.find(
+		{},
+		{},
+		function(e, docs){
+			res.render('ghosts',{
+				"docs" : docs,
+				title : 'Ghosts'
+			});
+		}
+	);
+});
+
 router.get('/json', function(req, res, next){
 	var db = req.db;
 	var collection = db.get('leaderboards');
@@ -21,11 +36,16 @@ router.get('/json', function(req, res, next){
 	});
 });
 
-router.post('/submitGhost/:id', function(req, res, next){
+router.post('/submitGhost/:id/:level/:place/:time/:name', function(req, res, next){
 	var db = req.db;
 	var id = req.params.id;
+	var place = req.params.place;
+	var level = parseInt(req.params.level);
+	var name = req.params.name;
+//	level = level -1;
+	var time = parseInt(req.params.time);
 	var collection = db.get('ghosts');
-	var jsonRecord = '{"ghostid":"'+id+'","ghost":'+JSON.stringify(req.body)+'}';//make entire request a json file
+	var jsonRecord = '{"name":"'+name+'","level":"'+level+'","place":"'+place+'","time":"'+time+'","ghostid":"'+id+'","ghost":'+JSON.stringify(req.body)+'}';//make entire request a json file
 	console.log(jsonRecord);
 	//console.log(jsonRecord);
 	var jsonString = JSON.parse(jsonRecord);
@@ -49,11 +69,11 @@ router.get('/update/:level/:place/:name/:time', function(req, res, next){
         var place = req.params.place-1;
 	var newTime = parseInt(req.params.time);
 	var level = parseInt(req.params.level);//since leves are 0 indexed in db
+	var id = rand_string(5);
 	level = level -1;
         var nameq = "levels."+level+".data."+place+".name";
 	var timeq = "levels."+level+".data."+place+".time";
 	var idq = "levels."+level+".data."+place+".id";
-	var id = rand_string(5);
 	//var timeq = "levels.$.data."+place+".time";
 	var obj = {};
 	obj[nameq] = req.params.name;
@@ -72,7 +92,7 @@ router.get('/update/:level/:place/:name/:time', function(req, res, next){
 				var obj = {};
         obj[nameq] = req.params.name;
         obj[timeq] = req.params.time;
-        obj[idq] = req.params.id;
+        obj[idq] = id;
 
 				console.log("newTime: " + newTime + " previousTime: " + previousTime); 
 				if(newTime < previousTime){//the new time is less than the previous time, put in db
