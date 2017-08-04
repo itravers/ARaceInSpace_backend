@@ -56,4 +56,32 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.locals.helloworld = function(){
+  return "hello world";
+}
+
+/* Convert ms to min:sec:ms */
+app.locals.msToString = function(timeMS){
+	var time = timeMS;
+	if(time == 99999999)return "";
+	//console.log("timeMS: " + timeMS);
+        var min = (time / 1000) / 60;
+	min = Math.floor(min);
+	//console.log("min: " + min);
+        time = time - (min * 60 * 1000);
+        var sec = time / 1000;
+	sec = Math.floor(sec);
+	//console.log("sec: " + sec);
+        time = time - (sec * 1000);
+        var ms = time;
+	//console.log("ms : " + ms);
+	//console.log(min + ":" + sec + ":" + ms);
+        var minString = "";
+	if(min != 0){
+		minString = min + " Min : ";
+	}
+        return minString + sec+" Sec : "+ms+" Ms";
+
+}
+
 module.exports = app;

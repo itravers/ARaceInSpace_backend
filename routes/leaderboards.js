@@ -225,5 +225,16 @@ function rand_string(n) {
     return rs;
 }
 
+function msToStringBackend(timeMS){
+        var time = timeMS;
+        var min = (time / 1000) / 60;
+        time = time - (min * 60 * 1000);
+        var sec = time / 1000;
+        time = time - (sec * 1000);
+        var ms = time;
+        return min+":"+sec+":"+ms;
+
+}
+
 
 module.exports = router;
