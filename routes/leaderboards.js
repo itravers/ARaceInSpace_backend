@@ -28,6 +28,66 @@ router.get('/ghosts', function(req, res, next){
 	);
 });
 
+router.get('/ghosts/json', function(req, res, next){
+	var db = req.db;
+	var collection = db.get('ghosts');
+	collection.find(
+		{},
+		{},
+		function(e, docs){
+			res.send(docs);
+		}
+	);
+});
+
+/**
+  Get the ghost that corresponds with a current level and place
+  1. Query leaderboards collection for id of ghost with specific
+     level and place.
+  2. Query ghosts collection for ghost with that id
+  3. Return ghost if found, if id = xxxxx it means the ghost was
+     not found
+*/
+router.get('/getghost/:level/:place', function(req, res, next){
+	var db = req.db;
+	var leaderBoardCollection = db.get('leaderboards');
+	var ghostsCollection = db.get('ghosts');
+	var level = req.params.level -1;
+	var place = req.params.place-1;
+//	console.log("level: " + level);
+//	console.log("place: " + place);
+	leaderBoardCollection.find(
+		{},
+		{},
+		function(e, docs){
+			if(e == null){
+				var ghostid = docs[0].levels[level].data[place].id
+				console.log("Retrieving ghost: " + ghostid);
+				if(ghostid === "xxxxx"){
+					res.send("no ghost found");
+				}else{
+					//ghost was found, get from colletion
+					ghostsCollection.find(
+						{ghostid : ghostid},
+						{},
+						function(e, docs){
+							if(e == null){
+								res.send(docs[0].ghost);
+							}else{
+								res.send(e);
+							}
+						}
+					);
+				}
+			}else{
+				res.send(e);
+			}
+		}
+	);
+
+	
+});
+
 router.get('/json', function(req, res, next){
 	var db = req.db;
 	var collection = db.get('leaderboards');
