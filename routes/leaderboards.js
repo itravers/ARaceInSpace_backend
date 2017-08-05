@@ -65,6 +65,35 @@ router.get('/levelleaders', function(req,res,next){
 	);
 });
 
+
+/** Returns the ghost requested by the player
+*/
+router.get('/customghost/:ghostid/:level', function(req, res, next){
+  var level = req.params.level;
+  var ghostID = req.params.ghostid;
+  var db = req.db;
+  var collection = db.get('ghosts');
+  collection.find(
+    {ghostid : ghostID},
+    {},
+    function(e, docs){
+      if(e == null){
+        if(docs.length == 0){
+          res.send("error: ghost " + ghostID + " not found!");
+        }else{
+          if(docs[0].level !== level){
+            res.send("error: that ghost is for level " + docs[0].level + ". You choose level " + level);
+          }else{
+            res.send(docs[0].ghost);
+          }
+        }
+      }else{
+        res.send("error: " + e);
+      }
+    }
+  );
+});
+
 /**
   Get the ghost that corresponds with a current level and place
   1. Query leaderboards collection for id of ghost with specific
