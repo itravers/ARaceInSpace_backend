@@ -40,6 +40,31 @@ router.get('/ghosts/json', function(req, res, next){
 	);
 });
 
+
+/**
+  Returns a String of all the level leaders seperated by :
+*/
+router.get('/levelleaders', function(req,res,next){
+	var db = req.db;
+	var collection = db.get('leaderboards');
+	collection.find(
+		{},
+		{},
+		function(e, docs){
+			if(e == null){
+				//build string here
+				var leadersString = "";
+				for(var i = 0; i < docs[0].levels.length; i++){
+					leadersString = leadersString + docs[0].levels[i].data[0].name + ":";
+				}
+				res.send(leadersString)
+			}else{
+				res.send(e);
+			}
+		}
+	);
+});
+
 /**
   Get the ghost that corresponds with a current level and place
   1. Query leaderboards collection for id of ghost with specific
