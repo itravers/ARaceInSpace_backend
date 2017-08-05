@@ -11,20 +11,17 @@ block content
         table.table.table-sm.table-bordered.table-inverse.table-hover
             thead.thead-inverse
                 tr
+                    th ID
+                    th Name
                     th Level
                     th Place
-                    th Name
                     th Time
-                    th ID
             tbody
-                each level, i in docs[0].levels
+                each ghost, i in docs
                     tr
-                        td #{level.name}
-                        each place, j in level.data
-                          tr
-                          td
-                          td #{place.place}
-                          td #{place.name}
-                          td #{msToString(place.time)}
-                          td #{place.id}
+                        td #{ghost.ghostid}
+                        td #{ghost.name}
+                        td #{ghost.level}
+                        td #{ghost.place}
+                        td #{ghost.time}
                 
