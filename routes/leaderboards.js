@@ -81,11 +81,15 @@ router.get('/customghost/:ghostid/:level', function(req, res, next){
         if(docs.length == 0){
           res.send("error: ghost " + ghostID + " not found!");
         }else{
+          var returnArray = [];
+          returnArray.push({"level" : docs[0].level, "ghost" : docs[0].ghost});
+          res.send(JSON.stringify(returnArray));
+          /*
           if(docs[0].level !== level){
             res.send("error: that ghost is for level " + docs[0].level + ". You choose level " + level);
           }else{
             res.send(docs[0].ghost);
-          }
+          }*/
         }
       }else{
         res.send("error: " + e);
