@@ -45,6 +45,7 @@ router.get('/ghosts/json', function(req, res, next){
   Returns a String of all the level leaders seperated by :
 */
 router.get('/levelleaders', function(req,res,next){
+  console.log("/levelleaders");
 	var db = req.db;
 	var collection = db.get('leaderboards');
 	collection.find(
@@ -57,9 +58,16 @@ router.get('/levelleaders', function(req,res,next){
 				for(var i = 0; i < docs[0].levels.length; i++){
 					leadersString = leadersString + docs[0].levels[i].data[0].name + ":";
 				}
-				res.send(leadersString)
-			}else{
-				res.send(e);
+
+        //check for MongoError
+        if(leadersString.includes("MongoError")){
+          res.send("error" + leadersString);
+        }else{
+        
+		  		res.send(leadersString)
+			  }
+      }else{
+				res.send("error" + e);
 			}
 		}
 	);
