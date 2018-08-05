@@ -44,14 +44,18 @@ router.get('/ghosts/json', function(req, res, next){
 /**
   Returns a String of all the level leaders seperated by :
 */
-router.get('/levelleaders', function(req,res,next){
-  console.log("/levelleaders");
+router.get('/levelleaders/:packNum', function(req,res,next){
+  var packNum = req.params.packNum;
+  packNum = parseInt(packNum);
+  console.log("/levelleaders/");
+  console.log("packNum: " + packNum);
 	var db = req.db;
 	var collection = db.get('leaderboards');
 	collection.find(
-		{},
+		{"packNum" : packNum},
 		{},
 		function(e, docs){
+      console.log("e: " + e);
 			if(e == null){
 				//build string here
 				var leadersString = "";
