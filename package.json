@@ -17,6 +17,7 @@
     "mongodb": "*",
     "monk": "*",
     "moment": "*",
-    "crypto": "*"
+    "crypto": "*",
+    "zip-dir": "*"
   }
 }

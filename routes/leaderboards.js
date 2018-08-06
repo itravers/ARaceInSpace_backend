@@ -158,11 +158,12 @@ router.get('/getghost/:level/:place', function(req, res, next){
 	
 });
 
-router.get('/json', function(req, res, next){
+router.get('/json/:levelPack', function(req, res, next){
 	var db = req.db;
 	var collection = db.get('leaderboards');
+  var levelPack = parseInt(req.params.levelPack);
 	collection.find({}, {}, function(e, docs){
-		res.send(docs);
+		res.send(docs[levelPack]);
 	});
 });
 
