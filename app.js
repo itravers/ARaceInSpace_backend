@@ -13,6 +13,7 @@ var db = monk('localhost:27017/araceinspace');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var leaderboards = require('./routes/leaderboards');
+var levelPacks = require('./routes/levelPacks');
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use(function(req, res, next){
 app.use('/', index);
 app.use('/users', users);
 app.use('/leaderboards', leaderboards);
+app.use('/levelpacks', levelPacks);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
