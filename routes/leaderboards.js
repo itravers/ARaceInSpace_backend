@@ -55,7 +55,11 @@ router.get('/levelleaders/:packNum', function(req,res,next){
 		{"packNum" : packNum},
 		{},
 		function(e, docs){
-      console.log("e: " + e);
+      //there were no levelpacks with that packNum
+      if(docs[0] == undefined){
+				res.send("error " + "no Level Pack " + packNum + " found!");
+        return; //don't continue servicing the request
+      }
 			if(e == null){
 				//build string here
 				var leadersString = "";
