@@ -22,7 +22,7 @@ router.get('/get/:packNum', function(req, res, next){
   zipdir('data/levelpacks/'+packNum, function (err, buffer) {
     // `buffer` is the buffer of the zipped file
     console.log("err: " + err);
-    console.log("buffer: " + buffer);
+//    console.log("buffer: " + buffer);
     res.send(buffer);
   });
 });
