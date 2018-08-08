@@ -135,6 +135,11 @@ router.get('/getghost/:level/:place', function(req, res, next){
 		{},
 		function(e, docs){
 			if(e == null){
+        //error check
+        if(docs[0].levels[level] == undefined){
+          res.send("no ghost found");
+          return;
+        }
 				var ghostid = docs[0].levels[level].data[place].id
 				console.log("Retrieving ghost: " + ghostid);
 				if(ghostid === "xxxxx"){
@@ -198,14 +203,16 @@ router.post('/submitGhost/:id/:level/:place/:time/:name', function(req, res, nex
 	);
 });
 
-router.get('/update/:level/:place/:name/:time', function(req, res, next){
+router.get('/update/:packNum/:level/:place/:name/:time', function(req, res, next){
 	var db = req.db;
 	var collection = db.get('leaderboards');
         var place = req.params.place-1;
 	var newTime = parseInt(req.params.time);
 	var level = parseInt(req.params.level);//since leves are 0 indexed in db
+  var pNum = parseInt(req.params.packNum);
 	var id = rand_string(5);
-	level = level -1;
+	level = level -1;//start at 0 index
+  level = level % 12;
         var nameq = "levels."+level+".data."+place+".name";
 	var timeq = "levels."+level+".data."+place+".time";
 	var idq = "levels."+level+".data."+place+".id";
@@ -216,36 +223,43 @@ router.get('/update/:level/:place/:name/:time', function(req, res, next){
 	obj[idq] = id;
 
 
-
+  //get all the leaderboards, and search to see if we beat correct spot
 	collection.find(
 		{},
 		{},
 		function(e, docs){
 			if(e==null){
-				var previousTime = docs[0].levels[level].data[place].time;
-				previousTime = parseInt(previousTime);
-				var obj = {};
-        obj[nameq] = req.params.name;
-        obj[timeq] = req.params.time;
-        obj[idq] = id;
+        var previousTime;
+        console.log("packNum: " + pNum + " Level-1: " + level);
+        //check if a previous time even exists
+        if(docs[pNum].levels[level] != undefined){
+  				previousTime = docs[pNum].levels[level].data[place].time;
+  				previousTime = parseInt(previousTime);
+  				var obj = {};
+          obj[nameq] = req.params.name;
+          obj[timeq] = req.params.time;
+          obj[idq] = id;
+        }else{
+          //no previous time exists, so we want a time that newTime is sure to beat
+          previousTime = 100000000;
+        }
 
 				console.log("newTime: " + newTime + " previousTime: " + previousTime); 
-				if(newTime < previousTime){//the new time is less than the previous time, put in db
-				
-					 collection.update(
-						{},
-				                //{ levels: { $elemMatch: {name : req.params.level}} },
-              					  { $set: obj},
-              					  function(e, docs){
-                				        if(e == null){
-                        				        res.send("success:"+id);
-                       					 }else{
-                        				        res.send(e);
-                       					 }
-               					  }
-      					);
 
-
+        //we did beat the correct spot, now we want to u pdate that record
+				if(newTime < previousTime){//the new time is less than the previous time, put in db	
+				  collection.update(
+            {packNum: pNum},
+				    //{ levels: { $elemMatch: {name : req.params.level}} },
+            { $set: obj},
+            function(e, docs){
+              if(e == null){
+                res.send("success:"+id);
+              }else{
+                res.send(e);
+              }
+            }
+      		);
 				}else{
 					res.send("Not Fast Enough");
 				}
