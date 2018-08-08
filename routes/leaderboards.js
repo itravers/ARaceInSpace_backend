@@ -143,14 +143,18 @@ router.get('/getghost/:level/:place', function(req, res, next){
 				var ghostid = docs[0].levels[level].data[place].id
 				console.log("Retrieving ghost: " + ghostid);
 				if(ghostid === "xxxxx"){
-					res.send("no ghost found");
+					res.send("no ghost found");//client is expecting this
 				}else{
 					//ghost was found, get from colletion
 					ghostsCollection.find(
 						{ghostid : ghostid},
 						{},
 						function(e, docs){
-							if(e == null){
+              console.log("docs: " + docs);
+              //Error checking for error, or no returned value
+              if(docs[0] == undefined){
+                res.send("no ghost found");//client is expecting this return
+              }else if(e == null){
 								res.send(docs[0].ghost);
 							}else{
 								res.send(e);
