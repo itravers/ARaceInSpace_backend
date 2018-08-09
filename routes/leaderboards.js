@@ -122,13 +122,17 @@ router.get('/customghost/:ghostid/:level', function(req, res, next){
   3. Return ghost if found, if id = xxxxx it means the ghost was
      not found
 */
-router.get('/getghost/:level/:place', function(req, res, next){
+router.get('/getghost/:packNum/:level/:place', function(req, res, next){
 	var db = req.db;
 	var leaderBoardCollection = db.get('leaderboards');
 	var ghostsCollection = db.get('ghosts');
 	var level = req.params.level -1;
+  //there are only 12 levels a pack
+  level = level % 12;
 	var place = req.params.place-1;
-//	console.log("level: " + level);
+  var packNum = req.params.packNum;
+	console.log("packNum: " + packNum);
+	console.log("level: " + level);
 //	console.log("place: " + place);
 	leaderBoardCollection.find(
 		{},
@@ -140,7 +144,7 @@ router.get('/getghost/:level/:place', function(req, res, next){
           res.send("no ghost found");
           return;
         }
-				var ghostid = docs[0].levels[level].data[place].id
+				var ghostid = docs[packNum].levels[level].data[place].id
 				console.log("Retrieving ghost: " + ghostid);
 				if(ghostid === "xxxxx"){
 					res.send("no ghost found");//client is expecting this
