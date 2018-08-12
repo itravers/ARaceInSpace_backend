@@ -6,7 +6,11 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  console.log('You have a lag set in this function');
+  setTimeout(function() {
+    res.send('respond with a resource');
+    console.log('Blah blah blah blah extra-blah');
+  }, 10000);
 });
 
 /*
@@ -18,6 +22,8 @@ zipdir('/path/to/be/zipped', { saveTo: '~/myzip.zip' }, function (err, buffer) {
 
 /* GET individual level packs */
 router.get('/get/:packNum', function(req, res, next){
+console.log('You have a lag set in this function');//take this out
+setTimeout(function() {//take this out
   var packNum = req.params.packNum;
   zipdir('data/levelpacks/'+packNum, function (err, buffer) {
     // `buffer` is the buffer of the zipped file
@@ -25,6 +31,7 @@ router.get('/get/:packNum', function(req, res, next){
 //    console.log("buffer: " + buffer);
     res.send(buffer);
   });
+}, 10000);//take this out
 });
 
 /* GET respond with a string that has each level pack that is
