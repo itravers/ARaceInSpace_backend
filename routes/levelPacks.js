@@ -23,7 +23,7 @@ zipdir('/path/to/be/zipped', { saveTo: '~/myzip.zip' }, function (err, buffer) {
 /* GET individual level packs */
 router.get('/get/:packNum', function(req, res, next){
 console.log('You have a lag set in this function');//take this out
-setTimeout(function() {//take this out
+//setTimeout(function() {//take this out
   var packNum = req.params.packNum;
   zipdir('data/levelpacks/'+packNum, function (err, buffer) {
     // `buffer` is the buffer of the zipped file
@@ -31,18 +31,20 @@ setTimeout(function() {//take this out
 //    console.log("buffer: " + buffer);
     res.send(buffer);
   });
-}, 10000);//take this out
+//}, 10000);//take this out
 });
 
 /* GET respond with a string that has each level pack that is
    available delimited by spaces
 */
 router.get('/packsAvailable', function(req, res, next){
+//setTimeout(function() {
   var packsAvailable = "";
   fs.readdirSync('data/levelpacks/').forEach(file => {
     packsAvailable += " " + file;
   });
     res.send(packsAvailable);
+//}, 5000);//take this out
 });
 
 /* GET check if given level pack exists */
